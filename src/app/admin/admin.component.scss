@@ -1,0 +1,79 @@
+.heading-box{
+    padding: 140px 0;
+}
+
+.admin-heading{
+    background-color:#bb0826;
+    padding: 15px
+}
+
+.admin-heading .title{
+    color: yellow
+}
+.toggle-bars{
+    font-size: 30px;
+    padding-left: 10px;
+    color: white;
+}
+.filter-section{
+    margin-left: 4%;
+}
+.default-user{
+    margin-top: -15px;
+}
+.activate-admin{
+    color:white !important;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sub-menu{
+    background: darkgray;
+    padding: 3px 0;
+}
+
+.common-section{
+    border: 1px solid;
+    padding: 4px 10px;
+}
+.admin-data-form .row{
+    margin-bottom: 10px
+}
+.activation-date{
+    margin-left: 4%;
+    flex: 0 0 11%;
+    max-width: 11%;
+    padding-top: 6px
+}
+
+.padding-none{
+    padding: 0
+}
+
+.table-heading{
+    background-color: #0062cc;
+    color: white;
+}
+.table th, .table td{
+    padding: 0.3rem;
+}
+.manage-feature{
+    padding-right: 10px;
+    font-weight: bold
+}
+
+.manager-dropdown{
+    width: 172px;
+    height: 37px;
+    margin-right: 10px;
+    margin-top: 6px;
+    background: #007bff;
+    border-radius: 5px;
+    color: white;
+    padding: 0 6px;
+}
+
+.modal-dialog {
+   min-width: 656px;
+    margin: 1.75rem auto;
+}
