@@ -42,11 +42,12 @@
     <div class="row">
       <div class="col-sm-1 activation-date">Activation Date:</div>
       <div class="col-sm-2 padding-none">
+          <input type="date" class="form-control" id="activationDate" name="entryTimestamp"  required>
         <!-- <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"> -->
       </div>
-      <div class="col-sm-1 text-right">Features:</div>
+      <div class="col-sm-1 text-right ">Features:</div>
       <div class="col-sm-3 padding-none">
-        <ngx-select-dropdown (change)="selectionChanged($event)" [(value)]="dataModel" [config]="config" [options]="adminFeatureDropdown"></ngx-select-dropdown>
+        <ngx-select-dropdown (change)="handleFeature($event)" [(value)]="adminFeature" [config]="featureConfig" [options]="adminFeatureDropdown"></ngx-select-dropdown>
         <!-- <div class="form-check">
           <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
           <label class="form-check-label" for="defaultCheck1">
@@ -73,19 +74,22 @@
             <th scope="col">Branch AU</th>
             <th scope="col">Feature Name</th>
             <th scope="col">Activation Date</th>
+            <th scope="col">Feature Default</th>
             <th scope="col">Edit</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of branchConfig">
+          <tr *ngFor="let data of branchConfig; let i = index" [attr.data-index]="i">
             <td class="text-center">
               <input class="form-check-input" type="checkbox" value="">
             </td>
             <td>{{data.branchAU}}</td>
             <td>{{data.featureName}}</td>
             <td>{{data.entryTimestamp | date}}</td>
+            <td>{{data.featureDefaultChar}}</td>
             <td class="text-center">
-              <img data-toggle="modal" data-target="#exampleModal" height="20" width="20" src="../../assets/edit.png" />
+              <img data-toggle="modal" (click)='handleEdit(data,i)' data-target="#exampleModal" height="20" width="20" src="../../assets/edit.png"
+              />
             </td>
           </tr>
         </tbody>
@@ -94,22 +98,37 @@
 
   </div>
 </div>
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" data-backdrop="static" data-keyboard="false" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Manager View</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Feature Name</label>
+            <input type="text" [(ngModel)]="selectedRow.featureName" name="feature" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+              placeholder="Enter Feature Name">
 
-       <input type="date" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">branchAU</label>
+            <input [(ngModel)]="selectedRow.branchAU" name="branch" type="number" class="form-control" id="exampleInputPassword1" placeholder="Enter branchAU">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Select Activation Date</label>
+            <input type="date" class="form-control" id="activationDate" name="entryTimestamp" [ngModel]="selectedRow.entryTimestamp | date:'yyyy-MM-dd'" (ngModelChange)="selectedRow.entryTimestamp = $event"
+              [value]="selectedRow.entryTimestamp | date:'yyyy-MM-dd'" #activationDate="ngModel" required>
+          </div>
+        </form>
+
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary"  data-dismiss="modal" aria-label="Close" (click)="saveChanges(selectedRow)">Save Changes</button>
       </div>
     </div>
   </div>
