@@ -31,6 +31,7 @@
       </div>
       <div class="col-sm-1 text-right ">branchAU:</div>
       <div class="col-sm-2 padding-none">
+          <!-- <input class="form-control" [(ngModel)]="branchAU" /> -->
         <ngx-select-dropdown (change)="handleBranch($event)" [(value)]="branchAU" [config]="branchAuDropdownConfig" [options]="branchAUDropdown"></ngx-select-dropdown>
       </div>
       <div class="col-sm-1 text-right">

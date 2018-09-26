@@ -809,11 +809,11 @@ export class AdminComponent implements OnInit {
   }
 
   handleFeature(event) {
-    this.selectedAdminFeatureDropdownValue = event.value[0].type
+    this.selectedAdminFeatureDropdownValue = event.value.length && event.value[0].type; 
 
   }
   handleBranch(event) {
-    this.selectedAdminBranchDropdownValue = event.value[0].type
+    this.selectedAdminBranchDropdownValue = event.value.length && event.value[0].type; 
   }
 
   handleSearch() {
@@ -821,8 +821,10 @@ export class AdminComponent implements OnInit {
       this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue && val.branchAU === this.selectedAdminBranchDropdownValue)
     } else if (this.selectedAdminFeatureDropdownValue && !this.selectedAdminBranchDropdownValue) {
       this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue)
-    } else {
+    } else if(!this.selectedAdminFeatureDropdownValue && this.selectedAdminBranchDropdownValue){
       this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.branchAU === this.selectedAdminBranchDropdownValue)
+    } else{
+      this.branchConfig = this.adminBranchConfigValues;
     }
 
   }
