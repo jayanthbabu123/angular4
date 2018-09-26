@@ -18,27 +18,7 @@
         <h5>Activate Branches</h5>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-2 filter-section">
-        <ngx-select-dropdown (change)="selectionChanged($event)" [(value)]="group" [config]="config" [options]="selectAdminDropdown"></ngx-select-dropdown>
-        <!-- <div class="common-section">
-          Select Group
-          <fa name="arrow-down" class="pull-right"></fa>
-        </div> -->
-      </div>
-      <div class="col-sm-2">
-        <ngx-select-dropdown placeholder='test' (change)="selectionChanged($event)" [(value)]="division" [config]="config" [options]="selectAdminDropdown"></ngx-select-dropdown>
-      </div>
-      <div class="col-sm-2">
-        <ngx-select-dropdown (change)="selectionChanged($event)" [(value)]="region" [config]="config" [options]="selectAdminDropdown"></ngx-select-dropdown>
-      </div>
-      <div class="col-sm-2">
-        <ngx-select-dropdown (change)="selectionChanged($event)" [(value)]="market" [config]="config" [options]="selectAdminDropdown"></ngx-select-dropdown>
-      </div>
-      <div class="col-sm-2">
-        <ngx-select-dropdown (change)="selectionChanged($event)" [(value)]="dataModel" [config]="config" [options]="selectAdminDropdown"></ngx-select-dropdown>
-      </div>
-    </div>
+  
     <div class="row">
       <div class="col-sm-1 activation-date">Activation Date:</div>
       <div class="col-sm-2 padding-none">
@@ -48,21 +28,13 @@
       <div class="col-sm-1 text-right ">Features:</div>
       <div class="col-sm-3 padding-none">
         <ngx-select-dropdown (change)="handleFeature($event)" [(value)]="adminFeature" [config]="featureConfig" [options]="adminFeatureDropdown"></ngx-select-dropdown>
-        <!-- <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-          <label class="form-check-label" for="defaultCheck1">
-            One Interface
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-          <label class="form-check-label" for="defaultCheck2">
-            Manager View
-          </label>
-        </div> -->
       </div>
-      <div class="col-sm-4 text-right">
-        <button class="btn btn-primary"> Search</button>
+      <div class="col-sm-1 text-right ">branchAU:</div>
+      <div class="col-sm-2 padding-none">
+        <ngx-select-dropdown (change)="handleBranch($event)" [(value)]="branchAU" [config]="branchAuDropdownConfig" [options]="branchAUDropdown"></ngx-select-dropdown>
+      </div>
+      <div class="col-sm-1 text-right">
+        <button class="btn btn-primary" (click)="handleSearch()"> Search</button>
       </div>
 
     </div>
@@ -102,7 +74,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Manager View</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{selectedRow.featureName}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

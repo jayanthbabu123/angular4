@@ -28,11 +28,13 @@ export class AdminComponent implements OnInit {
   adminView: Boolean = false;
   selectedType: string = '';
   selectedData;
+  selectedAdminFeatureDropdownValue: string;
+  selectedAdminBranchDropdownValue: string;
   formData: any;
   selectAdminDropdown: any;
   appName: 'select app';
   tableData: any;
-  selectedIndex:number;
+  selectedIndex: number;
   config = {
     displayKey: "type"
   };
@@ -40,6 +42,10 @@ export class AdminComponent implements OnInit {
     displayKey: "type",
     placeholder: "select feature"
   };
+  branchAuDropdownConfig = {
+    displayKey: "type",
+    placeholder: "select BranchAU"
+  }
   dropdownOptions: any;
   navigationItems: any;
   branchConfig: any = [
@@ -787,6 +793,7 @@ export class AdminComponent implements OnInit {
     }
   ]
   adminFeatureDropdown: any = [];
+  branchAUDropdown: any = [];
   adminBranchConfigValues: any;
   selectedRow = {
     "branchAU": "",
@@ -802,9 +809,23 @@ export class AdminComponent implements OnInit {
   }
 
   handleFeature(event) {
-    this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === event.value[0].type)
+    this.selectedAdminFeatureDropdownValue = event.value[0].type
+
+  }
+  handleBranch(event) {
+    this.selectedAdminBranchDropdownValue = event.value[0].type
   }
 
+  handleSearch() {
+    if (this.selectedAdminFeatureDropdownValue && this.selectedAdminBranchDropdownValue) {
+      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue && val.branchAU === this.selectedAdminBranchDropdownValue)
+    } else if (this.selectedAdminFeatureDropdownValue && !this.selectedAdminBranchDropdownValue) {
+      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue)
+    } else {
+      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.branchAU === this.selectedAdminBranchDropdownValue)
+    }
+
+  }
   saveChanges(data) {
     this.branchConfig[this.selectedIndex] = data;
   }
@@ -818,9 +839,11 @@ export class AdminComponent implements OnInit {
     this.adminView = false;
     this.managerView = false;
   }
-  handleEdit(data,index:number) {
+
+
+  handleEdit(data, index: number) {
     this.selectedIndex = index;
-    this.selectedRow=data;
+    this.selectedRow = data;
     // this.selectedRow.featureName = data.featureName;
     // this.selectedRow.branchAU = data.branchAU;
     // this.selectedRow.entryTimestamp = data.entryTimestamp;
@@ -1092,7 +1115,8 @@ export class AdminComponent implements OnInit {
         ]
       }
     this.adminFeatureDropdown = _.uniqBy(this.branchConfig.map((value, index) => ({ "type": value.featureName })), 'type');
-    console.log(this.adminFeatureDropdown);
+    this.branchAUDropdown = _.uniqBy(this.branchConfig.map((value, index) => ({ "type": value.branchAU })), 'type');
+    console.log(this.branchAUDropdown);
     this.tableData = this.navigationItems.branchConfigs.slice();
 
     this.dropdownOptions = this.navigationItems.branchConfigs.map((val, index) => ({ "appName": val.appName }))
