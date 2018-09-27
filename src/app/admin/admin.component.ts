@@ -1,19 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-
-// @Component({
-//   selector: 'app-admin',
-//   templateUrl: './admin.component.html',
-//   styleUrls: ['./admin.component.scss']
-// })
-// export class AdminComponent implements OnInit {
-
-//   constructor() { }
-
-//   ngOnInit() {
-//   }
-
-// }
-
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../admin.service';
 import * as _ from 'lodash';
@@ -34,7 +18,10 @@ export class AdminComponent implements OnInit {
   selectAdminDropdown: any;
   appName: 'select app';
   tableData: any;
+  sortDirection = 'asc';
   selectedIndex: number;
+  sortDirectionFeature = 'asc';
+  sortDirectionActivation = 'asc'
   config = {
     displayKey: "type"
   };
@@ -807,23 +794,42 @@ export class AdminComponent implements OnInit {
   constructor(private AdminService: AdminService) {
 
   }
+  sort(type) {
+    console.log(type)
+    if (type === 'branchAU') {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      this.branchConfig = _.orderBy(this.branchConfig, [`${type}`], [`${this.sortDirection}`]);
+    } else if (type === 'featureName') {
+      this.sortDirectionFeature = this.sortDirectionFeature === 'asc' ? 'desc' : 'asc';
+      this.branchConfig = _.orderBy(this.branchConfig, [`${type}`], [`${this.sortDirectionFeature}`]);
+    } else {
+      this.sortDirectionActivation = this.sortDirectionActivation === 'asc' ? 'desc' : 'asc';
+      this.branchConfig = _.orderBy(this.branchConfig, [`${type}`], [`${this.sortDirectionActivation}`]);
+    }
+
+    // Use Lodash to sort array by 'name'
+  }
+  pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+  }
 
   handleFeature(event) {
-    this.selectedAdminFeatureDropdownValue = event.value.length && event.value[0].type; 
-
+    this.selectedAdminFeatureDropdownValue = event.value.length && event.value[0].type;
   }
   handleBranch(event) {
-    this.selectedAdminBranchDropdownValue = event.value.length && event.value[0].type; 
+    this.selectedAdminBranchDropdownValue = event.value.length && event.value[0].type;
   }
 
-  handleSearch() {
-    if (this.selectedAdminFeatureDropdownValue && this.selectedAdminBranchDropdownValue) {
-      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue && val.branchAU === this.selectedAdminBranchDropdownValue)
-    } else if (this.selectedAdminFeatureDropdownValue && !this.selectedAdminBranchDropdownValue) {
+  handleSearch(data) {
+    if (this.selectedAdminFeatureDropdownValue && data) {
+      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue && val.branchAU.indexOf(data) > -1)
+    } else if (this.selectedAdminFeatureDropdownValue && !data) {
       this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue)
-    } else if(!this.selectedAdminFeatureDropdownValue && this.selectedAdminBranchDropdownValue){
-      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.branchAU === this.selectedAdminBranchDropdownValue)
-    } else{
+    } else if (!this.selectedAdminFeatureDropdownValue && data) {
+      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.branchAU.indexOf(data) > -1)
+    } else {
       this.branchConfig = this.adminBranchConfigValues;
     }
 
@@ -1116,7 +1122,13 @@ export class AdminComponent implements OnInit {
           }
         ]
       }
-    this.adminFeatureDropdown = _.uniqBy(this.branchConfig.map((value, index) => ({ "type": value.featureName })), 'type');
+    this.adminFeatureDropdown = [
+      { type: 'MANAGER_VIEW' },
+      { type: 'MANAGER_VIEW.ACTIVATION_DATE' },
+      { type: 'ONE_INTERFACE.ACTIVATION_DATE' },
+      { type: 'ONE_INTERFACE' }
+    ]
+    //this.adminFeatureDropdown = _.uniqBy(this.branchConfig.map((value, index) => ({ "type": value.featureName })), 'type');
     this.branchAUDropdown = _.uniqBy(this.branchConfig.map((value, index) => ({ "type": value.branchAU })), 'type');
     console.log(this.branchAUDropdown);
     this.tableData = this.navigationItems.branchConfigs.slice();
