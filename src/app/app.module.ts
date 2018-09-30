@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { FormsModule } from '@angular/forms';
+import {NgxPaginationModule} from 'ngx-pagination'
 
 import { AppComponent } from './app.component';
 import { AdminComponent } from './admin/admin.component';
@@ -15,6 +16,7 @@ import {AdminService} from './admin.service';
     BrowserModule,
     SelectDropDownModule,
     FormsModule,
+    NgxPaginationModule,
   ],
   providers: [AdminService],
   bootstrap: [AppComponent]

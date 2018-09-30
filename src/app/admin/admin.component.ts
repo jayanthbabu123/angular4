@@ -11,6 +11,7 @@ export class AdminComponent implements OnInit {
   managerView: Boolean = false;
   adminView: Boolean = false;
   selectedType: string = '';
+  itemCount=10; 
   selectedData;
   selectedAdminFeatureDropdownValue: string;
   selectedAdminBranchDropdownValue: string;
