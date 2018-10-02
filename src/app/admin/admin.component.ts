@@ -22,7 +22,8 @@ export class AdminComponent implements OnInit {
   sortDirection = 'asc';
   selectedIndex: number;
   sortDirectionFeature = 'asc';
-  sortDirectionActivation = 'asc'
+  sortDirectionActivation = 'asc';
+  isDate:any;
   config = {
     displayKey: "type"
   };
@@ -852,7 +853,10 @@ export class AdminComponent implements OnInit {
 
   handleEdit(data, index: number) {
     this.selectedIndex = index;
+    this.isDate = new Date(data.featureDefaultChar).toString() !== 'Invalid Date' ? true: false ;
+    console.log(this.isDate);
     this.selectedRow = data;
+
     // this.selectedRow.featureName = data.featureName;
     // this.selectedRow.branchAU = data.branchAU;
     // this.selectedRow.entryTimestamp = data.entryTimestamp;
