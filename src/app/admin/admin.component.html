@@ -79,7 +79,7 @@
             <td>{{pad(data.branchAU,7,0)}}</td>
             <td>{{data.featureName}}</td>
             <!-- <td>{{data.entryTimestamp |}}</td> -->
-            <td>{{data.featureDefaultChar}}</td>
+            <td >{{ data.featureDefaultChar}}</td>
             <td class="text-center">
               <img data-toggle="modal" (click)='handleEdit(data,i)' data-target="#exampleModal" height="20" width="20" src="../../assets/edit.png"
               />
@@ -128,7 +128,7 @@
           </div>
           <div class="form-group" *ngIf="isDate">
             <label for="exampleInputPassword1">Select Activation Date</label>
-            <input type="date" class="form-control" id="activationDate" name="featureDefaultChar" [ngModel]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
+            <input type="date" class="form-control"  data-date-format="YYYY MM DD" id="activationDate" name="featureDefaultChar" [ngModel]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
               (ngModelChange)="selectedRow.featureDefaultChar = $event" [value]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
               #activationDate="ngModel" required>
           </div>

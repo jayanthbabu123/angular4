@@ -887,6 +887,14 @@ export class AdminComponent implements OnInit {
     this.formData = this.AdminService.getData();
     this.selectedData = this.formData['oneInterface'];
     this.selectAdminDropdown = this.AdminService.selectGroup;
+    this.branchConfig = this.branchConfig.map((val)=>{
+       let isDate = new Date(val.featureDefaultChar).toString() !== 'Invalid Date' ? true : false;
+      if(isDate){
+        val.featureDefaultChar = new Date(val.featureDefaultChar).toLocaleDateString("en-US");
+      }
+      return val;
+    });
+
     this.adminBranchConfigValues = this.branchConfig.slice();
     this.navigationItems =
       {
