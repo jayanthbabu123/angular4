@@ -8,10 +8,13 @@ import * as _ from 'lodash';
 })
 export class AdminComponent implements OnInit {
   showButton: Boolean = true;
+  today = '';
   managerView: Boolean = false;
   adminView: Boolean = false;
+  checkByDate: Boolean = true;
+  checkByValue: Boolean = false;
   selectedType: string = '';
-  itemCount=10; 
+  itemCount = 10;
   selectedData;
   selectedAdminFeatureDropdownValue: string;
   selectedAdminBranchDropdownValue: string;
@@ -23,7 +26,7 @@ export class AdminComponent implements OnInit {
   selectedIndex: number;
   sortDirectionFeature = 'asc';
   sortDirectionActivation = 'asc';
-  isDate:any;
+  isDate: any;
   config = {
     displayKey: "type"
   };
@@ -796,6 +799,21 @@ export class AdminComponent implements OnInit {
   constructor(private AdminService: AdminService) {
 
   }
+  searchByActivation(event, type) {
+    if (type === 'date') {
+      this.checkByValue = false;
+      this.checkByDate = true;
+    } else {
+      this.checkByDate = false;
+      this.checkByValue = true;
+    }
+
+  }
+  searchByDate(event) {
+    this.branchConfig = this.adminBranchConfigValues.filter((value, index) => {
+      return value.featureDefaultChar && value.featureDefaultChar.toLowerCase().indexOf(event) > -1;
+    })
+  }
   sort(type) {
     console.log(type)
     if (type === 'branchAU') {
@@ -853,15 +871,9 @@ export class AdminComponent implements OnInit {
 
   handleEdit(data, index: number) {
     this.selectedIndex = index;
-    this.isDate = new Date(data.featureDefaultChar).toString() !== 'Invalid Date' ? true: false ;
+    this.isDate = new Date(data.featureDefaultChar).toString() !== 'Invalid Date' ? true : false;
     console.log(this.isDate);
     this.selectedRow = data;
-
-    // this.selectedRow.featureName = data.featureName;
-    // this.selectedRow.branchAU = data.branchAU;
-    // this.selectedRow.entryTimestamp = data.entryTimestamp;
-    // this.selectedRow.featureDefaultChar = data.featureDefaultChar;
-    // this.selectedRow.updateTimestamp = data.updateTimestamp;
   }
 
   selectChangeHandler(selected: any) {

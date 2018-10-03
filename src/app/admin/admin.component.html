@@ -20,13 +20,27 @@
     </div>
 
     <div class="row">
-      <div class="col-sm-1 activation-date">Activation Date:</div>
-      <div class="col-sm-2 padding-none">
-        <input type="date" class="form-control" id="activationDate" name="entryTimestamp" required>
+      <div class="col-sm-3 activation-date">
+        <input type="checkbox" [(ngModel)]="checkByDate"  (ngModelChange)="searchByActivation($event,'date')" /> Activation Date
+        <input type="checkbox" [(ngModel)]="checkByValue" (ngModelChange)="searchByActivation($event,'value')" /> Feature Default Char
+      </div>
+      <div class="col-sm-2 padding-none" *ngIf="checkByDate">
+        <!-- <input type="date" class="form-control" id="activationDate" name="entryTimestamp" required>
+         <label for="exampleInputPassword1">Select Activation Date</label> -->
+        <input type="date" class="form-control" id="featureDate" name="today" [ngModel]="today" (ngModelChange)="searchByDate($event)"
+          [value]="today" #featureDate="ngModel" required>
+        <!-- <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"> -->
+      </div>
+      <div class="col-sm-2 padding-none" *ngIf="checkByValue">
+          <input type="text" placeholder="search by value" class="form-control" [ngModel]="today"  (ngModelChange)="searchByDate($event)" />
+        <!-- <input type="date" class="form-control" id="activationDate" name="entryTimestamp" required>
+           <label for="exampleInputPassword1">Select Activation Date</label> -->
+        <!-- <input type="date" class="form-control" id="featureDate" name="today" [ngModel]="today | date:'yyyy-MM-dd'" (ngModelChange)="searchByDate($event)"
+          [value]="today | date:'yyyy-MM-dd'" #featureDate="ngModel" required> -->
         <!-- <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"> -->
       </div>
       <div class="col-sm-1 text-right ">Features:</div>
-      <div class="col-sm-3 padding-none">
+      <div class="col-sm-2 padding-none">
         <ngx-select-dropdown (change)="handleFeature($event)" [(value)]="adminFeature" [config]="featureConfig" [options]="adminFeatureDropdown"></ngx-select-dropdown>
       </div>
       <div class="col-sm-1 text-right ">branchAU:</div>
@@ -94,18 +108,18 @@
         <form>
           <div class="form-group">
             <label for="exampleInputEmail1">Feature Name</label>
-            <input [disabled]="true" type="text" [(ngModel)]="selectedRow.featureName" name="feature" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-              placeholder="Enter Feature Name">
+            <input [disabled]="true" type="text" [(ngModel)]="selectedRow.featureName" name="feature" class="form-control" id="exampleInputEmail1"
+              aria-describedby="emailHelp" placeholder="Enter Feature Name">
 
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">branchAU</label>
-            <input [disabled]="true" [(ngModel)]="selectedRow.branchAU" maxlength="7" name="branch" type="text" class="form-control" id="exampleInputPassword1"
-              placeholder="Enter branchAU">
+            <input [disabled]="true" [(ngModel)]="selectedRow.branchAU" maxlength="7" name="branch" type="text" class="form-control"
+              id="exampleInputPassword1" placeholder="Enter branchAU">
           </div>
           <div class="form-group" *ngIf="!isDate">
-              <label for="featureDefaultChar">Feature Defalut</label>
-              <input [(ngModel)]="selectedRow.featureDefaultChar" id="featureDefaultChar" name="featureDefaultChar" type="text" class="form-control" 
+            <label for="featureDefaultChar">Feature Defalut</label>
+            <input [(ngModel)]="selectedRow.featureDefaultChar" id="featureDefaultChar" name="featureDefaultChar" type="text" class="form-control"
               placeholder="Enter featureDefaultChar">
             <!-- <label for="exampleInputPassword1">Select Activation Date</label>
             <input type="date" class="form-control" id="activationDate" name="entryTimestamp" [ngModel]="selectedRow.entryTimestamp | date:'yyyy-MM-dd'"
@@ -113,11 +127,11 @@
               #activationDate="ngModel" required> -->
           </div>
           <div class="form-group" *ngIf="isDate">
-          <label for="exampleInputPassword1">Select Activation Date</label>
-          <input type="date" class="form-control" id="activationDate" name="featureDefaultChar" [ngModel]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
-            (ngModelChange)="selectedRow.featureDefaultChar = $event" [value]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
-            #activationDate="ngModel" required>
-        </div>
+            <label for="exampleInputPassword1">Select Activation Date</label>
+            <input type="date" class="form-control" id="activationDate" name="featureDefaultChar" [ngModel]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
+              (ngModelChange)="selectedRow.featureDefaultChar = $event" [value]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
+              #activationDate="ngModel" required>
+          </div>
 
         </form>
 
