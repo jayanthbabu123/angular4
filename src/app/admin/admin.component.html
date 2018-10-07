@@ -21,18 +21,20 @@
 
     <div class="row">
       <div class="col-sm-3 activation-date">
-        <input type="checkbox" [(ngModel)]="checkByDate"  (ngModelChange)="searchByActivation($event,'date')" /> Activation Date
-        <input type="checkbox" [(ngModel)]="checkByValue" (ngModelChange)="searchByActivation($event,'value')" /> Feature Default Char
+        <input type="checkbox" [(ngModel)]="checkByDate" (ngModelChange)="searchByActivation($event,'date')" />
+        Activation Date
+        <input type="checkbox" [(ngModel)]="checkByValue" (ngModelChange)="searchByActivation($event,'value')" />
+        Feature Default Char
       </div>
       <div class="col-sm-2 padding-none" *ngIf="checkByDate">
         <!-- <input type="date" class="form-control" id="activationDate" name="entryTimestamp" required>
          <label for="exampleInputPassword1">Select Activation Date</label> -->
-        <input type="date" class="form-control" id="featureDate" name="today" [ngModel]="today" (ngModelChange)="searchByDate($event)"
+        <input type="date" class="form-control" id="featureDate" name="today" [(ngModel)]="today" (ngModelChange)="searchByDate($event)"
           [value]="today" #featureDate="ngModel" required>
         <!-- <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"> -->
       </div>
       <div class="col-sm-2 padding-none" *ngIf="checkByValue">
-          <input type="text" placeholder="search by value" class="form-control" [ngModel]="today"  (ngModelChange)="searchByDate($event)" />
+        <input type="text" placeholder="search by value" class="form-control" [(ngModel)]="today" (ngModelChange)="searchByDate($event)" />
         <!-- <input type="date" class="form-control" id="activationDate" name="entryTimestamp" required>
            <label for="exampleInputPassword1">Select Activation Date</label> -->
         <!-- <input type="date" class="form-control" id="featureDate" name="today" [ngModel]="today | date:'yyyy-MM-dd'" (ngModelChange)="searchByDate($event)"
@@ -41,52 +43,65 @@
       </div>
       <div class="col-sm-1 text-right ">Features:</div>
       <div class="col-sm-2 padding-none">
-        <ngx-select-dropdown (change)="handleFeature($event)" [(value)]="adminFeature" [config]="featureConfig" [options]="adminFeatureDropdown"></ngx-select-dropdown>
+        <!-- <ngx-select-dropdown (change)="handleFeature($event)" [(value)]="adminFeature" [config]="featureConfig"
+          [options]="adminFeatureDropdown"></ngx-select-dropdown> -->
+        <select class='select-option' required [(ngModel)]='adminFeature' class="form-control" (ngModelChange)='handleFeature(adminFeature)'>
+            <option [ngValue]="undefined" disabled  selected> Select Feature </option>
+          <option class='option' *ngFor='let option of adminFeatureDropdown; let i = index' [value]="option.type">{{option.type}}</option>
+        </select>
       </div>
       <div class="col-sm-1 text-right ">branchAU:</div>
       <div class="col-sm-2 padding-none">
         <input class="form-control" [(ngModel)]="branchAU" type="text" placeholder="Search Branch" />
-        <!-- <ngx-select-dropdown (change)="handleBranch($event)" [(value)]="branchAU" [config]="branchAuDropdownConfig" [options]="branchAUDropdown"></ngx-select-dropdown> -->
       </div>
-      <div class="col-sm-1 text-right">
-        <button class="btn btn-primary" (click)="handleSearch(branchAU)"> Search</button>
-      </div>
+
 
     </div>
     <div class="row">
+      <div class="col-sm-11 text-right">
+        <button class="btn btn-primary" (click)="handleSearch(branchAU)"> Search</button>
+        <button class="btn btn-success" data-toggle="modal" data-target="#newFeature"> Add New</button>
+        <button class="btn btn-primary" (click)="clear()"> clear</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <table class="table table-striped table-bordered">
+          <thead class="table-heading">
+            <tr>
+              <th scope="col" (click)="sort('branchAU')">Branch AU
+                <i class="fa fa-chevron-up" *ngIf="sortDirection === 'asc'"></i>
+                <i class="fa fa-chevron-down" *ngIf="sortDirection === 'desc'"></i>
+              </th>
+              <th scope="col" (click)="sort('featureName')">Feature Name
+                <i class="fa fa-chevron-up" *ngIf="sortDirectionFeature === 'asc'"></i>
+                <i class="fa fa-chevron-down" *ngIf="sortDirectionFeature === 'desc'"></i>
+              </th>
+              <!-- <th scope="col" (click)="sort('entryTimestamp')">Activation Date
+                    <i class="fa fa-chevron-up" *ngIf="sortDirectionActivation === 'asc'"></i>
+                    <i class="fa fa-chevron-down" *ngIf="sortDirectionActivation === 'desc'"></i>
+                  </th> -->
+              <th scope="col">Feature Default</th>
+              <th scope="col">Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of branchConfig | paginate:{itemsPerPage:10,currentPage:p}; let i = index"
+              [attr.data-index]="i">
+              <td>{{pad(data.branchAU,7,0)}}</td>
+              <td>{{data.featureName}}</td>
+              <!-- <td>{{data.entryTimestamp |}}</td> -->
+              <td>{{ data.featureDefaultChar}}</td>
+              <td class="text-center">
+                <img data-toggle="modal" (click)='handleEdit(data,i)' data-target="#exampleModal" height="20" width="20"
+                  src="../../assets/edit.png" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <table class="table table-striped table-bordered">
-        <thead class="table-heading">
-          <tr>
-            <th scope="col" (click)="sort('branchAU')">Branch AU
-              <i class="fa fa-chevron-up" *ngIf="sortDirection === 'asc'"></i>
-              <i class="fa fa-chevron-down" *ngIf="sortDirection === 'desc'"></i>
-            </th>
-            <th scope="col" (click)="sort('featureName')">Feature Name
-              <i class="fa fa-chevron-up" *ngIf="sortDirectionFeature === 'asc'"></i>
-              <i class="fa fa-chevron-down" *ngIf="sortDirectionFeature === 'desc'"></i>
-            </th>
-            <!-- <th scope="col" (click)="sort('entryTimestamp')">Activation Date
-              <i class="fa fa-chevron-up" *ngIf="sortDirectionActivation === 'asc'"></i>
-              <i class="fa fa-chevron-down" *ngIf="sortDirectionActivation === 'desc'"></i>
-            </th> -->
-            <th scope="col">Feature Default</th>
-            <th scope="col">Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of branchConfig | paginate:{itemsPerPage:10,currentPage:p}; let i = index" [attr.data-index]="i">
-            <td>{{pad(data.branchAU,7,0)}}</td>
-            <td>{{data.featureName}}</td>
-            <!-- <td>{{data.entryTimestamp |}}</td> -->
-            <td >{{ data.featureDefaultChar}}</td>
-            <td class="text-center">
-              <img data-toggle="modal" (click)='handleEdit(data,i)' data-target="#exampleModal" height="20" width="20" src="../../assets/edit.png"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+
       <div class="pull-right">
         <pagination-controls (pageChange)="p=$event"></pagination-controls>
       </div>
@@ -94,8 +109,8 @@
 
   </div>
 </div>
-<div class="modal fade" data-backdrop="static" data-keyboard="false" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
+<div class="modal fade" data-backdrop="static" data-keyboard="false" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -108,8 +123,8 @@
         <form>
           <div class="form-group">
             <label for="exampleInputEmail1">Feature Name</label>
-            <input [disabled]="true" type="text" [(ngModel)]="selectedRow.featureName" name="feature" class="form-control" id="exampleInputEmail1"
-              aria-describedby="emailHelp" placeholder="Enter Feature Name">
+            <input [disabled]="true" type="text" [(ngModel)]="selectedRow.featureName" name="feature" class="form-control"
+              id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Feature Name">
 
           </div>
           <div class="form-group">
@@ -119,8 +134,8 @@
           </div>
           <div class="form-group" *ngIf="!isDate">
             <label for="featureDefaultChar">Feature Defalut</label>
-            <input [(ngModel)]="selectedRow.featureDefaultChar" id="featureDefaultChar" name="featureDefaultChar" type="text" class="form-control"
-              placeholder="Enter featureDefaultChar">
+            <input [(ngModel)]="selectedRow.featureDefaultChar" id="featureDefaultChar" name="featureDefaultChar" type="text"
+              class="form-control" placeholder="Enter featureDefaultChar">
             <!-- <label for="exampleInputPassword1">Select Activation Date</label>
             <input type="date" class="form-control" id="activationDate" name="entryTimestamp" [ngModel]="selectedRow.entryTimestamp | date:'yyyy-MM-dd'"
               (ngModelChange)="selectedRow.entryTimestamp = $event" [value]="selectedRow.entryTimestamp | date:'yyyy-MM-dd'"
@@ -128,16 +143,69 @@
           </div>
           <div class="form-group" *ngIf="isDate">
             <label for="exampleInputPassword1">Select Activation Date</label>
-            <input type="date" class="form-control"  data-date-format="YYYY MM DD" id="activationDate" name="featureDefaultChar" [ngModel]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
-              (ngModelChange)="selectedRow.featureDefaultChar = $event" [value]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
-              #activationDate="ngModel" required>
+            <input type="date" class="form-control" data-date-format="YYYY MM DD" id="activationDate" name="featureDefaultChar"
+              [ngModel]="selectedRow.featureDefaultChar" (ngModelChange)="selectedRow.featureDefaultChar = $event"
+              [value]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'" #activationDate="ngModel" required>
           </div>
 
         </form>
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" (click)="saveChanges(selectedRow)">Save Changes</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" (click)="saveChanges(selectedRow)">Save
+          Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" data-backdrop="static" data-keyboard="false" id="newFeature" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add new feature</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Feature Name</label>
+            <input type="text" [(ngModel)]="newFeature.featureName" name="featureName" class="form-control" id="exampleInputEmail1"
+              aria-describedby="emailHelp" placeholder="Enter Feature Name">
+
+          </div>
+          <div class="form-group">
+            <label for="branchAU">branchAU</label>
+            <input [(ngModel)]="newFeature.branchAU" maxlength="7" name="branchAU" type="text" class="form-control" id="branchAU"
+              placeholder="Enter branchAU">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword2">Feature defaultChar</label>
+            <input type="date" class="form-control" data-date-format="YYYY MM DD" id="activationDate" name="featureDefaultChar"
+              [ngModel]="newFeature.featureDefaultChar" (ngModelChange)="newFeature.featureDefaultChar = $event"
+              [value]="newFeature.featureDefaultChar | date:'yyyy-MM-dd'" #activationDate="ngModel" required>
+          </div>
+          <div class="form-group">
+            <label for="entryTimestamp">Entry Timestamp</label>
+            <input type="date" class="form-control" data-date-format="YYYY MM DD" id="entryTimestamp" name="entryTimestamp"
+              [ngModel]="newFeature.entryTimestamp" (ngModelChange)="newFeature.entryTimestamp = $event" [value]="newFeature.entryTimestamp | date:'yyyy-MM-dd'"
+              #entryTimestamp="ngModel" required>
+          </div>
+          <div class="form-group">
+            <label for="updateTimestamp">Update Timestamp</label>
+            <input type="date" class="form-control" data-date-format="YYYY MM DD" id="updateTimestamp" name="updateTimestamp"
+              [ngModel]="newFeature.updateTimestamp" (ngModelChange)="newFeature.updateTimestamp = $event" [value]="newFeature.updateTimestamp | date:'yyyy-MM-dd'"
+              #updateTimestamp="ngModel" required>
+          </div>
+
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal" aria-label="Close" (click)="addNew(newFeature)">Add
+          new</button>
       </div>
     </div>
   </div>

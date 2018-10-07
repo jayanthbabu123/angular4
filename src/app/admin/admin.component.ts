@@ -8,7 +8,9 @@ import * as _ from 'lodash';
 })
 export class AdminComponent implements OnInit {
   showButton: Boolean = true;
-  today = '';
+  today = null;
+  branchAU='';
+  adminFeature:any;
   managerView: Boolean = false;
   adminView: Boolean = false;
   checkByDate: Boolean = true;
@@ -794,6 +796,7 @@ export class AdminComponent implements OnInit {
     "entryTimestamp": "",
     "updateTimestamp": ""
   }
+  newFeature = JSON.parse(JSON.stringify(this.selectedRow));
 
 
   constructor(private AdminService: AdminService) {
@@ -809,13 +812,18 @@ export class AdminComponent implements OnInit {
     }
 
   }
+  addNew(data) {
+    this.branchConfig.push(data);
+    this.adminBranchConfigValues.push(data);
+    console.log(this.branchConfig);
+    this.newFeature = this.selectedRow;
+  }
   searchByDate(event) {
     this.branchConfig = this.adminBranchConfigValues.filter((value, index) => {
       return value.featureDefaultChar && value.featureDefaultChar.toLowerCase().indexOf(event) > -1;
     })
   }
   sort(type) {
-    console.log(type)
     if (type === 'branchAU') {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
       this.branchConfig = _.orderBy(this.branchConfig, [`${type}`], [`${this.sortDirection}`]);
@@ -836,7 +844,7 @@ export class AdminComponent implements OnInit {
   }
 
   handleFeature(event) {
-    this.selectedAdminFeatureDropdownValue = event.value.length && event.value[0].type;
+    this.selectedAdminFeatureDropdownValue = this.adminFeature;
   }
   handleBranch(event) {
     this.selectedAdminBranchDropdownValue = event.value.length && event.value[0].type;
@@ -883,19 +891,26 @@ export class AdminComponent implements OnInit {
   selectedValue() {
     this.selectedData = this.formData[this.selectedType]
   }
+  clear(){
+    this.today =null;
+    this.branchAU= '';
+    this.adminFeature='';
+    this.branchConfig = this.adminBranchConfigValues;
+  }
+ 
   ngOnInit() {
     this.formData = this.AdminService.getData();
     this.selectedData = this.formData['oneInterface'];
     this.selectAdminDropdown = this.AdminService.selectGroup;
-    this.branchConfig = this.branchConfig.map((val)=>{
-       let isDate = new Date(val.featureDefaultChar).toString() !== 'Invalid Date' ? true : false;
-      if(isDate){
+    this.adminBranchConfigValues = this.branchConfig.slice();
+    console.log(this.branchConfig.length)
+    this.branchConfig = this.branchConfig.map((val) => {
+      let isDate = new Date(val.featureDefaultChar).toString() !== 'Invalid Date' ? true : false;
+      if (isDate) {
         val.featureDefaultChar = new Date(val.featureDefaultChar).toLocaleDateString("en-US");
       }
       return val;
     });
-
-    this.adminBranchConfigValues = this.branchConfig.slice();
     this.navigationItems =
       {
         "address": {
@@ -1155,9 +1170,7 @@ export class AdminComponent implements OnInit {
     ]
     //this.adminFeatureDropdown = _.uniqBy(this.branchConfig.map((value, index) => ({ "type": value.featureName })), 'type');
     this.branchAUDropdown = _.uniqBy(this.branchConfig.map((value, index) => ({ "type": value.branchAU })), 'type');
-    console.log(this.branchAUDropdown);
     this.tableData = this.navigationItems.branchConfigs.slice();
-
     this.dropdownOptions = this.navigationItems.branchConfigs.map((val, index) => ({ "appName": val.appName }))
 
   }
