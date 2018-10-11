@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ElementRef } from '@angular/core';
 import { AdminService } from '../admin.service';
 import * as _ from 'lodash';
+declare var jQuery:any;
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -8,7 +9,9 @@ import * as _ from 'lodash';
 })
 export class AdminComponent implements OnInit {
   showButton: Boolean = true;
+  showErrorBranchAU:Boolean;
   today = null;
+  myData:any;
   branchAU='';
   adminFeature:any;
   managerView: Boolean = false;
@@ -29,17 +32,6 @@ export class AdminComponent implements OnInit {
   sortDirectionFeature = 'asc';
   sortDirectionActivation = 'asc';
   isDate: any;
-  config = {
-    displayKey: "type"
-  };
-  featureConfig = {
-    displayKey: "type",
-    placeholder: "select feature"
-  };
-  branchAuDropdownConfig = {
-    displayKey: "type",
-    placeholder: "select BranchAU"
-  }
   dropdownOptions: any;
   navigationItems: any;
   branchConfig: any = [
@@ -799,9 +791,10 @@ export class AdminComponent implements OnInit {
   newFeature = JSON.parse(JSON.stringify(this.selectedRow));
 
 
-  constructor(private AdminService: AdminService) {
+  constructor(private AdminService: AdminService,private el: ElementRef) {
 
   }
+
   searchByActivation(event, type) {
     if (type === 'date') {
       this.checkByValue = false;
@@ -812,11 +805,32 @@ export class AdminComponent implements OnInit {
     }
 
   }
+  addNewModalPopup(){
+    this.showErrorBranchAU = false;
+    this.newFeature = {
+      "branchAU": "",
+      "featureName": "",
+      "featureDefaultChar": "",
+      "entryTimestamp": "",
+      "updateTimestamp": ""
+    };
+  }
   addNew(data) {
-    this.branchConfig.push(data);
-    this.adminBranchConfigValues.push(data);
+    console.log(data);
+    this.myData = this.branchConfig.filter((value)=>{
+      return value.branchAU === data.branchAU;
+    })
+    if(!this.myData.length){
+      jQuery("#newFeature").modal("hide");
+      this.branchConfig.push(data);
+      this.adminBranchConfigValues.push(data);
+    } else{
+      this.showErrorBranchAU = true;
+    }
+    console.log(this.myData);
+    //this.newFeature = this.selectedRow;
     console.log(this.branchConfig);
-    this.newFeature = this.selectedRow;
+    
   }
   searchByDate(event) {
     this.branchConfig = this.adminBranchConfigValues.filter((value, index) => {
@@ -856,7 +870,7 @@ export class AdminComponent implements OnInit {
     } else if (this.selectedAdminFeatureDropdownValue && !data) {
       this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue)
     } else if (!this.selectedAdminFeatureDropdownValue && data) {
-      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.branchAU.indexOf(data) > -1)
+      this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.branchAU.toString().indexOf(data) > -1)
     } else {
       this.branchConfig = this.adminBranchConfigValues;
     }

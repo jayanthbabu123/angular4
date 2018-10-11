@@ -46,7 +46,7 @@
         <!-- <ngx-select-dropdown (change)="handleFeature($event)" [(value)]="adminFeature" [config]="featureConfig"
           [options]="adminFeatureDropdown"></ngx-select-dropdown> -->
         <select class='select-option' required [(ngModel)]='adminFeature' class="form-control" (ngModelChange)='handleFeature(adminFeature)'>
-            <option [ngValue]="undefined" disabled  selected> Select Feature </option>
+          <option [ngValue]="undefined" disabled selected> Select Feature </option>
           <option class='option' *ngFor='let option of adminFeatureDropdown; let i = index' [value]="option.type">{{option.type}}</option>
         </select>
       </div>
@@ -60,7 +60,7 @@
     <div class="row">
       <div class="col-sm-11 text-right">
         <button class="btn btn-primary" (click)="handleSearch(branchAU)"> Search</button>
-        <button class="btn btn-success" data-toggle="modal" data-target="#newFeature"> Add New</button>
+        <button class="btn btn-success" data-toggle="modal" data-target="#newFeature" (click)="addNewModalPopup()"> Add New</button>
         <button class="btn btn-primary" (click)="clear()"> clear</button>
       </div>
     </div>
@@ -158,7 +158,7 @@
     </div>
   </div>
 </div>
-<div class="modal fade" data-backdrop="static" data-keyboard="false" id="newFeature" tabindex="-1" role="dialog"
+<div class="modal fade" data-keyboard="false" data-target="newFeature" id="newFeature" tabindex="-1" role="dialog"
   aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -173,38 +173,28 @@
           <div class="form-group">
             <label for="exampleInputEmail1">Feature Name</label>
             <input type="text" [(ngModel)]="newFeature.featureName" name="featureName" class="form-control" id="exampleInputEmail1"
-              aria-describedby="emailHelp" placeholder="Enter Feature Name">
+              aria-describedby="emailHelp" placeholder="Enter Feature Name" required>
 
           </div>
           <div class="form-group">
             <label for="branchAU">branchAU</label>
-            <input [(ngModel)]="newFeature.branchAU" maxlength="7" name="branchAU" type="text" class="form-control" id="branchAU"
-              placeholder="Enter branchAU">
+            <input [(ngModel)]="newFeature.branchAU" maxlength="7" name="branchAU" type="number" class="form-control"
+              id="branchAU" placeholder="Enter branchAU">
           </div>
+          <label *ngIf="showErrorBranchAU" class="text-danger">The branchAU <span class="text-primary">{{myData.length ? myData[0].branchAU : ''}}</span> was already existed with the <span class="text-primary">{{myData.length ? myData[0].featureName : ''}}</span> feature name,
+            Please try with different branchAU</label>
           <div class="form-group">
             <label for="exampleInputPassword2">Feature defaultChar</label>
             <input type="date" class="form-control" data-date-format="YYYY MM DD" id="activationDate" name="featureDefaultChar"
               [ngModel]="newFeature.featureDefaultChar" (ngModelChange)="newFeature.featureDefaultChar = $event"
               [value]="newFeature.featureDefaultChar | date:'yyyy-MM-dd'" #activationDate="ngModel" required>
           </div>
-          <div class="form-group">
-            <label for="entryTimestamp">Entry Timestamp</label>
-            <input type="date" class="form-control" data-date-format="YYYY MM DD" id="entryTimestamp" name="entryTimestamp"
-              [ngModel]="newFeature.entryTimestamp" (ngModelChange)="newFeature.entryTimestamp = $event" [value]="newFeature.entryTimestamp | date:'yyyy-MM-dd'"
-              #entryTimestamp="ngModel" required>
-          </div>
-          <div class="form-group">
-            <label for="updateTimestamp">Update Timestamp</label>
-            <input type="date" class="form-control" data-date-format="YYYY MM DD" id="updateTimestamp" name="updateTimestamp"
-              [ngModel]="newFeature.updateTimestamp" (ngModelChange)="newFeature.updateTimestamp = $event" [value]="newFeature.updateTimestamp | date:'yyyy-MM-dd'"
-              #updateTimestamp="ngModel" required>
-          </div>
-
         </form>
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal" aria-label="Close" (click)="addNew(newFeature)">Add
+        <button type="submit" class="btn btn-success" id="addNewModel" data-target="addNewModel" aria-label="Close"
+          (click)="addNew(newFeature)">Add
           new</button>
       </div>
     </div>
