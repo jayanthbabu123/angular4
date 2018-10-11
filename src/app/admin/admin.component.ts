@@ -816,9 +816,8 @@ export class AdminComponent implements OnInit {
     };
   }
   addNew(data) {
-    console.log(data);
     this.myData = this.branchConfig.filter((value)=>{
-      return value.branchAU === data.branchAU;
+      return this.pad(value.branchAU,7,0) === this.pad(data.branchAU,7,0) ;
     })
     if(!this.myData.length){
       jQuery("#newFeature").modal("hide");
