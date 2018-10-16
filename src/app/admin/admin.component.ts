@@ -1,19 +1,25 @@
-import { Component, OnInit,ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
 import { AdminService } from '../admin.service';
 import * as _ from 'lodash';
-declare var jQuery:any;
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/timer';
+declare var jQuery: any;
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, OnDestroy {
+  public showMessage: boolean = false;
+  private subscription: Subscription;
+  private timer: Observable<any>;
   showButton: Boolean = true;
-  showErrorBranchAU:Boolean;
+  showErrorBranchAU: Boolean;
   today = null;
-  myData:any;
-  branchAU='';
-  adminFeature:any;
+  myData = [];
+  branchAU = '';
+  adminFeature: any;
   managerView: Boolean = false;
   adminView: Boolean = false;
   checkByDate: Boolean = true;
@@ -791,7 +797,7 @@ export class AdminComponent implements OnInit {
   newFeature = JSON.parse(JSON.stringify(this.selectedRow));
 
 
-  constructor(private AdminService: AdminService,private el: ElementRef) {
+  constructor(private AdminService: AdminService, private el: ElementRef) {
 
   }
 
@@ -805,7 +811,7 @@ export class AdminComponent implements OnInit {
     }
 
   }
-  addNewModalPopup(){
+  addNewModalPopup() {
     this.showErrorBranchAU = false;
     this.newFeature = {
       "branchAU": "",
@@ -815,21 +821,36 @@ export class AdminComponent implements OnInit {
       "updateTimestamp": ""
     };
   }
+  public ngOnDestroy() {
+    if (this.subscription && this.subscription instanceof Subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
   addNew(data) {
-    this.myData = this.branchConfig.filter((value)=>{
-      return this.pad(value.branchAU,7,0) === this.pad(data.branchAU,7,0) ;
+    this.myData = [];
+    this.branchConfig.filter((value) => {
+      if (this.pad(value.branchAU, 7, 0) === this.pad(data.branchAU, 7, 0)) {
+        this.myData.push(value.featureName);
+      }
     })
-    if(!this.myData.length){
+    if (!this.myData.length) {
+      this.showMessage = true;
+      this.timer = Observable.timer(5000); // 5000 millisecond means 5 seconds
+      this.subscription = this.timer.subscribe(() => {
+        // set showloader to false to hide loading div from view after 5 seconds
+        this.showMessage = false;
+      });
       jQuery("#newFeature").modal("hide");
       this.branchConfig.push(data);
       this.adminBranchConfigValues.push(data);
-    } else{
+    } else {
       this.showErrorBranchAU = true;
     }
+
     console.log(this.myData);
     //this.newFeature = this.selectedRow;
     console.log(this.branchConfig);
-    
+
   }
   searchByDate(event) {
     this.branchConfig = this.adminBranchConfigValues.filter((value, index) => {
@@ -904,13 +925,13 @@ export class AdminComponent implements OnInit {
   selectedValue() {
     this.selectedData = this.formData[this.selectedType]
   }
-  clear(){
-    this.today =null;
-    this.branchAU= '';
-    this.adminFeature='';
+  clear() {
+    this.today = null;
+    this.branchAU = '';
+    this.adminFeature = '';
     this.branchConfig = this.adminBranchConfigValues;
   }
- 
+
   ngOnInit() {
     this.formData = this.AdminService.getData();
     this.selectedData = this.formData['oneInterface'];

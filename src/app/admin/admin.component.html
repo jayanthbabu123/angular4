@@ -66,6 +66,7 @@
     </div>
     <div class="row">
       <div class="col-sm-12">
+        <p class="text-success" *ngIf="showMessage">record saved successfully</p>
         <table class="table table-striped table-bordered">
           <thead class="table-heading">
             <tr>
@@ -181,7 +182,7 @@
             <input [(ngModel)]="newFeature.branchAU" maxlength="7" name="branchAU" type="number" class="form-control"
               id="branchAU" placeholder="Enter branchAU">
           </div>
-          <label *ngIf="showErrorBranchAU" class="text-danger">The branchAU <span class="text-primary">{{myData.length ? myData[0].branchAU : ''}}</span> was already existed with the <span class="text-primary">{{myData.length ? myData[0].featureName : ''}}</span> feature name,
+          <label *ngIf="showErrorBranchAU" class="text-danger">The branchAU <span class="text-primary">{{newFeature.branchAU}}</span> was already existed with the <span class="text-primary">{{myData.length ? myData.toString() : ''}}</span> feature name,
             Please try with different branchAU</label>
           <div class="form-group">
             <label for="exampleInputPassword2">Feature defaultChar</label>
