@@ -179,7 +179,7 @@
           </div>
           <div class="form-group">
             <label for="branchAU">branchAU</label>
-            <input [(ngModel)]="newFeature.branchAU" maxlength="7" name="branchAU" type="number" class="form-control"
+            <input [(ngModel)]="newFeature.branchAU" maxlength="7" name="branchAU" type="number" class="form-control" (ngModelChange)="changeBranchAU(newFeature.branchAU)"
               id="branchAU" placeholder="Enter branchAU">
           </div>
           <label *ngIf="showErrorBranchAU" class="text-danger">The branchAU <span class="text-primary">{{newFeature.branchAU}}</span> was already existed with the <span class="text-primary">{{myData.length ? myData.toString() : ''}}</span> feature name,

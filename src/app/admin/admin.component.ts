@@ -1,19 +1,15 @@
 import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
+import { NotifierService } from 'angular-notifier';
 import { AdminService } from '../admin.service';
 import * as _ from 'lodash';
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/timer';
 declare var jQuery: any;
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit, OnDestroy {
-  public showMessage: boolean = false;
-  private subscription: Subscription;
-  private timer: Observable<any>;
+export class AdminComponent implements OnInit {
+  private readonly notifier: NotifierService;
   showButton: Boolean = true;
   showErrorBranchAU: Boolean;
   today = null;
@@ -797,8 +793,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   newFeature = JSON.parse(JSON.stringify(this.selectedRow));
 
 
-  constructor(private AdminService: AdminService, private el: ElementRef) {
-
+  constructor(private AdminService: AdminService, private el: ElementRef,notifierService: NotifierService) {
+    this.notifier = notifierService;
   }
 
   searchByActivation(event, type) {
@@ -821,11 +817,10 @@ export class AdminComponent implements OnInit, OnDestroy {
       "updateTimestamp": ""
     };
   }
-  public ngOnDestroy() {
-    if (this.subscription && this.subscription instanceof Subscription) {
-      this.subscription.unsubscribe();
-    }
+  changeBranchAU(){
+    this.showErrorBranchAU = false;
   }
+
   addNew(data) {
     this.myData = [];
     this.branchConfig.filter((value) => {
@@ -834,23 +829,13 @@ export class AdminComponent implements OnInit, OnDestroy {
       }
     })
     if (!this.myData.length) {
-      this.showMessage = true;
-      this.timer = Observable.timer(5000); // 5000 millisecond means 5 seconds
-      this.subscription = this.timer.subscribe(() => {
-        // set showloader to false to hide loading div from view after 5 seconds
-        this.showMessage = false;
-      });
       jQuery("#newFeature").modal("hide");
+      this.notifier.notify( 'success', 'Record saved successfully' );
       this.branchConfig.push(data);
       this.adminBranchConfigValues.push(data);
     } else {
       this.showErrorBranchAU = true;
     }
-
-    console.log(this.myData);
-    //this.newFeature = this.selectedRow;
-    console.log(this.branchConfig);
-
   }
   searchByDate(event) {
     this.branchConfig = this.adminBranchConfigValues.filter((value, index) => {
