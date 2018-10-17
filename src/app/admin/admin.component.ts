@@ -824,7 +824,7 @@ export class AdminComponent implements OnInit {
   addNew(data) {
     this.myData = [];
     this.branchConfig.filter((value) => {
-      if (this.pad(value.branchAU, 7, 0) === this.pad(data.branchAU, 7, 0)) {
+      if (this.pad(value.branchAU, 7, 0) === this.pad(data.branchAU, 7, 0) && data.featureName.toLowerCase() === value.featureName.toLowerCase()) {
         this.myData.push(value.featureName);
       }
     })
