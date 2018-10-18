@@ -12,6 +12,8 @@ export class AdminComponent implements OnInit {
   private readonly notifier: NotifierService;
   showButton: Boolean = true;
   showErrorBranchAU: Boolean;
+  branchAURequired: Boolean;
+  featureNameRequired: Boolean;
   today = null;
   myData = [];
   branchAU = '';
@@ -793,7 +795,7 @@ export class AdminComponent implements OnInit {
   newFeature = JSON.parse(JSON.stringify(this.selectedRow));
 
 
-  constructor(private AdminService: AdminService, private el: ElementRef,notifierService: NotifierService) {
+  constructor(private AdminService: AdminService, private el: ElementRef, notifierService: NotifierService) {
     this.notifier = notifierService;
   }
 
@@ -817,8 +819,10 @@ export class AdminComponent implements OnInit {
       "updateTimestamp": ""
     };
   }
-  changeBranchAU(){
+  changeBranchAU() {
     this.showErrorBranchAU = false;
+    this.featureNameRequired = false;
+    this.branchAURequired = false;
   }
 
   addNew(data) {
@@ -828,13 +832,21 @@ export class AdminComponent implements OnInit {
         this.myData.push(value.featureName);
       }
     })
-    if (!this.myData.length) {
-      jQuery("#newFeature").modal("hide");
-      this.notifier.notify( 'success', 'Record saved successfully' );
-      this.branchConfig.push(data);
-      this.adminBranchConfigValues.push(data);
-    } else {
-      this.showErrorBranchAU = true;
+    if (data.branchAU === "" || !data.branchAU) {
+      this.branchAURequired = true;
+    }
+    if (data.featureName === "" || !data.featureName) {
+      this.featureNameRequired = true;
+    }
+    if (data.featureName && data.branchAU) {
+      if (!this.myData.length) {
+        jQuery("#newFeature").modal("hide");
+        this.notifier.notify('success', 'Record saved successfully');
+        this.branchConfig.push(data);
+        this.adminBranchConfigValues.push(data);
+      } else {
+        this.showErrorBranchAU = true;
+      }
     }
   }
   searchByDate(event) {
