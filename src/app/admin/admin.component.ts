@@ -13,6 +13,7 @@ export class AdminComponent implements OnInit {
   showButton: Boolean = true;
   showErrorBranchAU: Boolean;
   branchAURequired: Boolean;
+  createadminFeatureDropdown: any;
   featureNameRequired: Boolean;
   today = null;
   myData = [];
@@ -811,6 +812,8 @@ export class AdminComponent implements OnInit {
   }
   addNewModalPopup() {
     this.showErrorBranchAU = false;
+    this.branchAURequired = false;
+    this.featureNameRequired = false;
     this.newFeature = {
       "branchAU": "",
       "featureName": "",
@@ -942,6 +945,10 @@ export class AdminComponent implements OnInit {
       }
       return val;
     });
+    this.createadminFeatureDropdown = [
+      { id: 1, type: 'MANAGER_VIEW' },
+       { id: 2, type: 'ONE_INTERFACE' }
+    ];
     this.navigationItems =
       {
         "address": {

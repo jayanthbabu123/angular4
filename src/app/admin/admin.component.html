@@ -172,7 +172,7 @@
       </div>
       <div class="modal-body">
         <form>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label for="exampleInputEmail1">Feature Name</label>
             <input type="text" [(ngModel)]="newFeature.featureName" name="featureName" class="form-control" id="exampleInputEmail1"
               aria-describedby="emailHelp" (ngModelChange)="changeBranchAU()" placeholder="Enter Feature Name" required >
@@ -180,6 +180,13 @@
           </div>
           <div *ngIf="featureNameRequired" class="alert alert-danger">
               Feature Name is required.
+          </div> -->
+          <label for="exampleInputEmail1">Feature Name</label>
+          <select (ngModelChange)="changeBranchAU()" class="form-control" name="createadminFeatureDropdown" [(ngModel)]="newFeature.featureName">
+            <option *ngFor="let a of createadminFeatureDropdown" [value]="a.type"> {{a.type}}</option>
+          </select>
+          <div *ngIf="featureNameRequired" class="alert alert-danger">
+            Feature Name is required.
           </div>
           <div class="form-group">
             <label for="branchAU">branchAU</label>
@@ -187,7 +194,7 @@
               (ngModelChange)="changeBranchAU()" id="branchAU" placeholder="Enter branchAU" required>
           </div>
           <div *ngIf="branchAURequired" class="alert alert-danger">
-              branchAU is required.
+            branchAU is required.
           </div>
           <label *ngIf="showErrorBranchAU" class="text-danger">The branchAU <span class="text-primary">{{newFeature.branchAU}}</span>
             was already existed with the <span class="text-primary">{{myData.length ? myData.toString() : ''}}</span>
