@@ -2,13 +2,19 @@ import { Component, OnInit, ElementRef, OnDestroy } from '@angular/core';
 import { NotifierService } from 'angular-notifier';
 import { AdminService } from '../admin.service';
 import * as _ from 'lodash';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/timer';
 declare var jQuery: any;
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit,OnDestroy {
+  public showMessage: boolean = false;
+  private subscription: Subscription;
+  private timer: Observable<any>;
   private readonly notifier: NotifierService;
   showButton: Boolean = true;
   showErrorBranchAU: Boolean;
@@ -810,7 +816,7 @@ export class AdminComponent implements OnInit {
     }
 
   }
-  addNewModalPopup() {
+  handleCreate() {
     this.showErrorBranchAU = false;
     this.branchAURequired = false;
     this.featureNameRequired = false;
@@ -843,13 +849,23 @@ export class AdminComponent implements OnInit {
     }
     if (data.featureName && data.branchAU) {
       if (!this.myData.length) {
+        this.showMessage = true;
+      this.timer = Observable.timer(3000); // 5000 millisecond means 5 seconds
+      this.subscription = this.timer.subscribe(() => {
+        this.showMessage = false;
+      });
         jQuery("#newFeature").modal("hide");
-        this.notifier.notify('success', 'Record saved successfully');
+        //this.notifier.notify('success', 'Record saved successfully');
         this.branchConfig.push(data);
         this.adminBranchConfigValues.push(data);
       } else {
         this.showErrorBranchAU = true;
       }
+    }
+  }
+  public ngOnDestroy() {
+    if (this.subscription && this.subscription instanceof Subscription) {
+      this.subscription.unsubscribe();
     }
   }
   searchByDate(event) {
@@ -925,7 +941,7 @@ export class AdminComponent implements OnInit {
   selectedValue() {
     this.selectedData = this.formData[this.selectedType]
   }
-  clear() {
+  clearSearch() {
     this.today = null;
     this.branchAU = '';
     this.adminFeature = '';

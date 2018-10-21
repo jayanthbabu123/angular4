@@ -1,0 +1,204 @@
+
+<div class="heading-box text-left" *ngIf='showButton'>
+    <button class="btn btn-primary" (click)="displayForm('admin')">Manage Branch Features</button>
+   <!-- <button class="btn btn-warning" (click)="displayForm('manage')">Manage Feature</button>-->
+  </div>
+  <div *ngIf='adminView'>
+    <div class="container-fluid admin-data-form">
+      <div class="row sub-menu">
+        <div class="col-md-12">
+          <h5>
+            <a class="activate-admin" (click)='exit()'> Exit</a>
+          </h5>
+        </div>
+      </div>
+     <!-- <hr>
+      <div class="col-md-12">
+          <h5 class="admin-heading bold">Manage Branch Features</h5>
+      </div>
+      
+      <hr>-->
+      
+      <div style="">
+        
+  <div class="row">
+    <div class="col-sm-12">
+          <h5 class="admin-heading bold">Manage Branch Features</h5>
+    </div>
+    </div>
+  <div class="container-fluid">
+  <div class="row row-left"> 
+    <div class="col-sm-6 padding-none admin-row">
+            <ul class="col-sm-4 padding none">
+             <li class="check-label"> <input  type="checkbox" [(ngModel)]="checkByDate"  (ngModelChange)="searchByActivation($event,'date')" /> Date</li>
+             <li class="check-label"> <input  type="checkbox" [(ngModel)]="checkByValue" (ngModelChange)="searchByActivation($event,'value')" /> Value</li>
+            </ul>
+            <ul class="col-sm-2 padding-none" *ngIf="checkByDate">
+              <input type="date" #searchDate  id="featureDate" name="today" [ngModel]="today" (ngModelChange)="searchByDate($event)"
+                [value]="today" #featureDate="ngModel" required>
+            </ul>
+            <ul class="col-sm-2 padding-none" *ngIf="checkByValue">
+                <input type="text" #searchByValue placeholder="search by value" [ngModel]="today"  (ngModelChange)="searchByDate($event)" />
+            </ul>
+    </div>
+        <div class="col-sm-4 admin-row">
+         Feature Name: <select  #createfeaturename [(ngModel)]="adminFeatureDropdown.id" (change)="handleFeature($event)" #searchFeature>
+          <option *ngFor="let a of adminFeatureDropdown"  [value]="a.type"> {{a.type}}</option>
+        </select>
+        </div>
+        <div class="col-sm-3 admin-row">
+          BranchAU:<input  [(ngModel)]="branchAU" type="text" #searchBranchAU (change)="handleBranchau($event)" placeholder="Search Branch" />
+        </div>
+        <div class="col-sm-2 admin-row">
+          <button  class="btn btn-primary" (click)="handleSearch(branchAU)"> Search</button>
+          <button  class="btn btn-primary" (click)="clearSearch()"> Clear Search</button>
+          <button class="btn btn-primary" data-toggle="modal" (click)='handleCreate(data,i)' data-target="#exampleModal" height="20" width="20"> Create branch</button>
+        </div>  
+    </div>
+    </div>
+    </div>
+  
+      
+      <div class="row">
+  
+        <table class="table table-striped table-bordered" height=80%, width=70%>
+          <thead class="table-heading">
+            <tr>
+              <th scope="col" (click)="sort('branchAU')">Branch AU
+                <i class="fa fa-chevron-up" *ngIf="sortDirection === 'asc'"></i>
+                <i class="fa fa-chevron-down" *ngIf="sortDirection === 'desc'"></i>
+              </th>
+              <th scope="col" (click)="sort('featureName')">Feature Name
+                  <i class="fa fa-chevron-up" *ngIf="sortDirectionFeature === 'asc'"></i>
+                  <i class="fa fa-chevron-down" *ngIf="sortDirectionFeature === 'desc'"></i>
+              </th>
+             <!-- <th scope="col" (click)="sort('entryTimestamp')">Activation Date
+                  <i class="fa fa-chevron-up" *ngIf="sortDirectionActivation === 'asc'"></i>
+                  <i class="fa fa-chevron-down" *ngIf="sortDirectionActivation === 'desc'"></i>
+              </th>-->
+              <th scope="col">Feature Default</th>
+              <th scope="col">Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+          <!--  <tr *ngFor="let data of branchConfig; let i = index" [attr.data-index]="i">-->
+           <tr *ngFor="let data of adminBranchConfigValues | paginate:{itemsPerPage:10,currentPage:p}; let i = index" [attr.data-index]="i"> 
+  
+              <td class="col-md-1">{{pad(data.branchAU,7,0)}}</td>
+              <td class="col-md-1">{{data.featureName}}</td>
+             <!-- <td>{{data.entryTimestamp | date}}</td>-->
+              <td class="col-md-1">{{data.featureDefaultChar}}</td>
+              <td class="text-center col-md-1">
+                <img data-toggle="modal" (click)='handleEdit(data,i)' data-target="#exampleModal" height="20" width="20" src="../../assets/images/edit.png"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pull-right">
+          <pagination-controls (pageChange)="p=$event"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" data-backdrop="static" data-keyboard="false" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf='!isCreate' class="modal-title" id="exampleModalLabel">Edit Feature</h5>
+          <h5 *ngIf ='isCreate' class="modal-title">Create New Branch</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+               <label for="exampleInputEmail1">Feature Name</label>
+               <input  *ngIf='!isCreate' type="text" [(ngModel)]="selectedRow.featureName" name="feature" class="form-control" [disabled]="true" id="exampleInputEmail1" aria-describedby="emailHelp"
+               placeholder="Enter Feature Name">
+  
+           
+                
+                <select *ngIf='isCreate' class="form-control" name="createadminFeatureDropdown" [ngClass]="branchAURequired?'form-control input-required':'form-control'" [(ngModel)]="model.featureName" required>
+                    <option *ngFor="let a of createadminFeatureDropdown"  [value]="a.type" title="Feature name is required"> {{a.type}}</option>
+                </select>
+                <!-- <div *ngIf="featureNameRequired" class="alert alert-danger">
+                  Feature Name is required.
+                </div> -->
+                
+   
+  
+         
+            <div class="form-group">
+              <label for="exampleInputPassword1">Branch AU</label>
+              <input *ngIf='!isCreate' [(ngModel)]="selectedRow.branchAU" maxlength="7" name="branch" type="text" class="form-control" [disabled]="true"  id="exampleInputPassword1"
+                placeholder="Enter branchAU">
+                <input *ngIf='isCreate' #createbranchau [(ngModel)]="model.branchAU" required minlength="7" name="branch" type="text" 
+                [ngClass]="branchAURequired?'form-control input-required':'form-control'" (ngModelChange)="changeBranchAU(model.branchAU)"  id="exampleInputPassword1"
+                placeholder="Enter branchAU" title="BranchAU is required" required>
+               </div>
+                <!--<div *ngIf="branchAURequired" class="alert alert-danger">
+                  branchAU is required.
+                </div>-->
+                 <label *ngIf="showErrorBranchAU" class="text-danger">The branchAU <span>{{myData.length ? myData[0].branchAU : ''}}</span> was already existed with the <span class="text-primary">{{myData.length ? model.featureName : ''}}</span> feature name,
+                  Please try with different branchAU</label>
+                  <!-- <label *ngIf="showErrorBranchAU" class="text-danger">The branchAU <span class="text-primary">{{selectedRow.branchAU}}</span> was already existed with the <span class="text-primary">{{myData.length ? myData.toString() : ''}}</span> feature name,
+              Please try with different branchAU</label> -->
+  
+            </div>
+           <div *ngIf='!isCreate' class="form-group">
+             <div *ngIf="selectedRow.featureDefaultChar.length > 3">
+              <label for="exampleInputPassword1">Activation Date</label>
+                <input type="date" class="form-control" id="activationDate" name="featureDefaultChar" [(ngModel)]="selectedRow.featureDefaultChar"
+                 [value]="selectedRow.featureDefaultChar | date:'yyyy-MM-dd'"
+                #activationDate="ngModel" required>
+             </div>
+             <div *ngIf="selectedRow.featureDefaultChar.length <= 3 ">
+                <label for="exampleInputPassword1">Activate Branch</label>
+                  <select class="form-control" name="featureDefaultChar" [(ngModel)]="selectedRow.featureDefaultChar">
+                    <option value="YES">YES</option>
+                    <option value="NO">NO</option>
+                  </select>
+             </div>
+            </div>
+            <div *ngIf="isCreate">
+           <!--   <input type="checkbox" [(ngModel)]="inputByDate"(change)="handleInputbyType($event,'date')" name="date">-->
+              <div class="form-group"><label>Activation Date</label><input class="form-control"#createactivationdate name="activationDate" [(ngModel)]="model.activationDate" type="date"/></div>
+             <!-- <input type="checkbox"#createactivationvalue [(ngModel)]="inputByValue" (change)="handleInputbyType($event,'value')" name="value">-->
+                <div class="form-group"><label> Activate</label><select class="form-control" #featureValue name="featureValue" [(ngModel)]="model.featureValue">
+                  <option value="YES" selected="selected">YES</option>
+                  <option value="NO">NO</option>
+                  </select>
+                </div>
+          </div>
+          </form>
+          </div>
+        <div class="modal-footer">
+  
+           <button *ngIf='isCreate' type="button"  class="btn btn-primary"  aria-label="Close" (click)="createBranch(model)">Create</button>
+           <!-- <div class="text-success" *ngIf="showMessage">Record saved successfully</div> -->
+  
+           <button *ngIf='!isCreate' type="button" data-dismiss="modal" class="btn btn-primary"  aria-label="Close" (click)="saveChanges(selectedRow)">Save Changes</button>
+     
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf='managerView' class="container-fluid">
+    <div class="row sub-menu">
+      <div class="col-md-12">
+        <h5>
+          <a class="activate-admin" (click)='exit()'>Exit</a>
+        </h5>
+      </div>
+    </div>
+  
+  <!-- <script type="text/javascript">
+    $(function () {
+      $('#datetimepicker1').datetimepicker({
+        language: 'pt-BR'
+      });
+    });
+  </script> -->
