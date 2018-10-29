@@ -11,7 +11,7 @@ declare var jQuery: any;
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit,OnDestroy {
+export class AdminComponent implements OnInit, OnDestroy {
   public showMessage: boolean = false;
   private subscription: Subscription;
   private timer: Observable<any>;
@@ -805,7 +805,7 @@ export class AdminComponent implements OnInit,OnDestroy {
   constructor(private AdminService: AdminService, private el: ElementRef, notifierService: NotifierService) {
     this.notifier = notifierService;
   }
-
+  //search the data by activation date and feature defaultchar
   searchByActivation(event, type) {
     if (type === 'date') {
       this.checkByValue = false;
@@ -816,6 +816,8 @@ export class AdminComponent implements OnInit,OnDestroy {
     }
 
   }
+  // open modal popup when creating new branch feature
+
   handleCreate() {
     this.showErrorBranchAU = false;
     this.branchAURequired = false;
@@ -828,13 +830,16 @@ export class AdminComponent implements OnInit,OnDestroy {
       "updateTimestamp": ""
     };
   }
+
+  //show and hide error messages in modal popup when existed values are entered
   changeBranchAU() {
     this.showErrorBranchAU = false;
     this.featureNameRequired = false;
     this.branchAURequired = false;
   }
 
-  addNew(data) {
+  // create new branch here
+  createBranch(data) {
     this.myData = [];
     this.branchConfig.filter((value) => {
       if (this.pad(value.branchAU, 7, 0) === this.pad(data.branchAU, 7, 0) && data.featureName.toLowerCase() === value.featureName.toLowerCase()) {
@@ -850,10 +855,10 @@ export class AdminComponent implements OnInit,OnDestroy {
     if (data.featureName && data.branchAU) {
       if (!this.myData.length) {
         this.showMessage = true;
-      this.timer = Observable.timer(3000); // 5000 millisecond means 5 seconds
-      this.subscription = this.timer.subscribe(() => {
-        this.showMessage = false;
-      });
+        this.timer = Observable.timer(3000); // 5000 millisecond means 5 seconds
+        this.subscription = this.timer.subscribe(() => {
+          this.showMessage = false;
+        });
         jQuery("#newFeature").modal("hide");
         //this.notifier.notify('success', 'Record saved successfully');
         this.branchConfig.push(data);
@@ -868,11 +873,13 @@ export class AdminComponent implements OnInit,OnDestroy {
       this.subscription.unsubscribe();
     }
   }
+  //search the values in the table by the date
   searchByDate(event) {
     this.branchConfig = this.adminBranchConfigValues.filter((value, index) => {
       return value.featureDefaultChar && value.featureDefaultChar.toLowerCase().indexOf(event) > -1;
     })
   }
+  //sort the values in the table by name
   sort(type) {
     if (type === 'branchAU') {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -884,22 +891,26 @@ export class AdminComponent implements OnInit,OnDestroy {
       this.sortDirectionActivation = this.sortDirectionActivation === 'asc' ? 'desc' : 'asc';
       this.branchConfig = _.orderBy(this.branchConfig, [`${type}`], [`${this.sortDirectionActivation}`]);
     }
-
-    // Use Lodash to sort array by 'name'
   }
+
+  //add zeros before the branchAU value
+
   pad(n, width, z) {
     z = z || '0';
     n = n + '';
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
   }
-
+  //handle the feature name value in the modal popup
   handleFeature(event) {
     this.selectedAdminFeatureDropdownValue = this.adminFeature;
   }
+
+  //handle the branch value in the modal popup
   handleBranch(event) {
     this.selectedAdminBranchDropdownValue = event.value.length && event.value[0].type;
   }
 
+  //search the data in the table by branchau and featurename
   handleSearch(data) {
     if (this.selectedAdminFeatureDropdownValue && data) {
       this.branchConfig = this.adminBranchConfigValues.filter((val, index) => val.featureName === this.selectedAdminFeatureDropdownValue && val.branchAU.indexOf(data) > -1)
@@ -912,21 +923,23 @@ export class AdminComponent implements OnInit,OnDestroy {
     }
 
   }
+  //save the values after editing values
   saveChanges(data) {
     this.branchConfig[this.selectedIndex] = data;
   }
-
+  //display the table based on required click event
   displayForm(value: string) {
     this.showButton = false;
     value === 'admin' ? this.adminView = true : this.managerView = true;
   }
+  //exit from the manager view page to initial page
   exit() {
     this.showButton = true;
     this.adminView = false;
     this.managerView = false;
   }
 
-
+  //edit the required value in the table
   handleEdit(data, index: number) {
     this.selectedIndex = index;
     this.isDate = new Date(data.featureDefaultChar).toString() !== 'Invalid Date' ? true : false;
@@ -938,9 +951,12 @@ export class AdminComponent implements OnInit,OnDestroy {
     this.navigationItems.branchConfigs = this.tableData.filter((data, value) => data.appName === selected);
     this.selectedData = this.formData[this.selectedType]
   }
+  //show the selected value in the popup
   selectedValue() {
     this.selectedData = this.formData[this.selectedType]
   }
+
+  //clear all the input values in the all search boxes
   clearSearch() {
     this.today = null;
     this.branchAU = '';
@@ -963,7 +979,7 @@ export class AdminComponent implements OnInit,OnDestroy {
     });
     this.createadminFeatureDropdown = [
       { id: 1, type: 'MANAGER_VIEW' },
-       { id: 2, type: 'ONE_INTERFACE' }
+      { id: 2, type: 'ONE_INTERFACE' }
     ];
     this.navigationItems =
       {

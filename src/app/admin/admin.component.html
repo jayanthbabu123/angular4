@@ -27,24 +27,14 @@
         Feature Default Char
       </div>
       <div class="col-sm-2 padding-none" *ngIf="checkByDate">
-        <!-- <input type="date" class="form-control" id="activationDate" name="entryTimestamp" required>
-         <label for="exampleInputPassword1">Select Activation Date</label> -->
         <input type="date" class="form-control" id="featureDate" name="today" [(ngModel)]="today" (ngModelChange)="searchByDate($event)"
           [value]="today" #featureDate="ngModel" required>
-        <!-- <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"> -->
       </div>
       <div class="col-sm-2 padding-none" *ngIf="checkByValue">
         <input type="text" placeholder="search by value" class="form-control" [(ngModel)]="today" (ngModelChange)="searchByDate($event)" />
-        <!-- <input type="date" class="form-control" id="activationDate" name="entryTimestamp" required>
-           <label for="exampleInputPassword1">Select Activation Date</label> -->
-        <!-- <input type="date" class="form-control" id="featureDate" name="today" [ngModel]="today | date:'yyyy-MM-dd'" (ngModelChange)="searchByDate($event)"
-          [value]="today | date:'yyyy-MM-dd'" #featureDate="ngModel" required> -->
-        <!-- <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"> -->
       </div>
       <div class="col-sm-1 text-right ">Features:</div>
       <div class="col-sm-2 padding-none">
-        <!-- <ngx-select-dropdown (change)="handleFeature($event)" [(value)]="adminFeature" [config]="featureConfig"
-          [options]="adminFeatureDropdown"></ngx-select-dropdown> -->
         <select class='select-option' required [(ngModel)]='adminFeature' class="form-control" (ngModelChange)='handleFeature(adminFeature)'>
           <option [ngValue]="undefined" disabled selected> Select Feature </option>
           <option class='option' *ngFor='let option of adminFeatureDropdown; let i = index' [value]="option.type">{{option.type}}</option>
@@ -214,7 +204,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-success" id="addNewModel" data-target="addNewModel" aria-label="Close"
-          (click)="addNew(newFeature)">Create
+          (click)="createBranch(newFeature)">Create
           </button>
       </div>
     </div>
